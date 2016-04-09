@@ -20,9 +20,10 @@ class Particle {
     opacity = opacity - 10;
   }
   
-  public void draw() {
-    fill(col, 10, col, opacity);
-    ellipse(x, y, radius, radius);
+  public void draw(PGraphics pg) {
+    pg.noStroke();
+    pg.fill(col, 10, col, opacity);
+    pg.ellipse(x, y, radius, radius);
   }
   
   public boolean shouldRemove() {

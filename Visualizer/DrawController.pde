@@ -10,15 +10,12 @@ class DrawController {
     ballList.add(particle);
   }
   
-  public void draw() {
-    fill(255, 100);
-    noStroke();
-    
+  public void draw(PGraphics pg) {
     Iterator iterator = ballList.iterator();
     while(iterator.hasNext()) {
       Particle particle = (Particle)iterator.next();
       
-      particle.draw();
+      particle.draw(pg);
 
       if (particle.shouldRemove()) {
         iterator.remove();

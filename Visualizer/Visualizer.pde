@@ -14,6 +14,8 @@ float mMaxVol = 0;
 float mMinVol = 200;
 
 DrawController mDrawController;
+PGraphics mPg;
+PGraphics mMask;
 float mVoltageMax;  //電圧の最大値
 float mTimeMax;  //電圧が最大値だったときの時間
 
@@ -25,6 +27,8 @@ void setup() {
   
   SerialPortSetup();
   mDrawController = new DrawController();
+  mPg = createGraphics(width, height);
+  mMask = createGraphics(width, height);
 }
 
 void draw() {
@@ -61,8 +65,8 @@ void draw() {
       mDrawController.addParticle(new Particle(mVoltageMax, mTimeMax, VOL_MIN, VOL_MAX, BOUNDARY));
     }
     
-    mDrawController.draw();
-
+    drawWithMask();
+    
     // For configuration
     if (mVoltageMax > mMaxVol) {
       mMaxVol = mVoltageMax;
@@ -73,4 +77,25 @@ void draw() {
 
     println("Voltage: " + mVoltageMax + ", minVol: " + mMinVol + ", maxVol: " + mMaxVol);
   }
+}
+
+void drawWithMask() {
+  mPg.beginDraw();
+  mPg.smooth();
+  mPg.background(0);
+  
+  mDrawController.draw(mPg);
+  
+  mPg.endDraw();
+  
+  mMask.beginDraw();
+  mMask.smooth();
+  mMask.background(0);
+  mMask.noStroke();
+  mMask.fill(255);
+  mMask.ellipse(width / 2, height / 2, height * 0.85, height * 0.85);
+  mMask.endDraw();
+  
+  mPg.mask(mMask);  
+  image(mPg, 0, 0);
 }
