@@ -1,23 +1,31 @@
 import java.util.*;
+import controlP5.*;
+
+static final String MASK_RADIUS_SLIDER_NAME = "mast_radius";
 
 /**
  * README
  * Edit these variables with mMinVol and mMaxVol after configuration.
  */
-float VOL_MIN = 80;
-float VOL_MAX = 300;
-float BOUNDARY = 200;
+float VOL_MIN = 18;
+float VOL_MAX = 327;
+float BOUNDARY = 150;
 
 // For configuration
 boolean mIsDelay = true;
+boolean mIsConfigEnabled;
 float mMaxVol = 0;
 float mMinVol = 200;
 
 DrawController mDrawController;
 PGraphics mPg;
 PGraphics mMask;
+Season mCurrentSeason;
 float mVoltageMax;  //電圧の最大値
 float mTimeMax;  //電圧が最大値だったときの時間
+
+ControlP5 cp5;
+Slider maskRadiusSlider;
 
 void setup() {
   size(displayWidth, displayHeight);
@@ -29,6 +37,14 @@ void setup() {
   mDrawController = new DrawController();
   mPg = createGraphics(width, height);
   mMask = createGraphics(width, height);
+  mCurrentSeason = Season.SPRING;
+  
+  cp5 = new ControlP5(this);
+  maskRadiusSlider = cp5.addSlider(MASK_RADIUS_SLIDER_NAME);
+  maskRadiusSlider.setPosition(20, 20).setSize(100, 20);
+  maskRadiusSlider.show();
+  maskRadiusSlider.setValue(80);
+  mIsConfigEnabled = true;
 }
 
 void draw() {
@@ -84,7 +100,7 @@ void drawWithMask() {
   mPg.smooth();
   mPg.background(0);
   
-  mDrawController.draw(mPg);
+  mDrawController.draw(mCurrentSeason, mPg);
   
   mPg.endDraw();
   
@@ -93,9 +109,42 @@ void drawWithMask() {
   mMask.background(0);
   mMask.noStroke();
   mMask.fill(255);
-  mMask.ellipse(width / 2, height / 2, height * 0.85, height * 0.85);
+  mMask.ellipse(width / 2,
+                height / 2,
+                map(maskRadiusSlider.getValue(), 0, 100, 1, height),
+                map(maskRadiusSlider.getValue(), 0, 100, 1, height));
   mMask.endDraw();
   
   mPg.mask(mMask);  
   image(mPg, 0, 0);
+}
+
+void keyReleased() {
+  switch (key) {
+    case ' ':
+      mIsConfigEnabled = !mIsConfigEnabled;
+      
+      if (mIsConfigEnabled) {
+        maskRadiusSlider.show();
+      } else {
+        maskRadiusSlider.hide();
+      }
+      break;
+      
+    case '1':
+      mCurrentSeason = Season.SPRING;
+      break;
+      
+    case '2':
+      mCurrentSeason = Season.SUMMER;
+      break;
+      
+    case '3':
+      mCurrentSeason = Season.AUTUMN;
+      break;
+      
+    case '4':
+      mCurrentSeason = Season.WINTER;
+      break;
+  }
 }
