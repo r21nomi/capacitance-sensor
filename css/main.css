@@ -68,6 +68,7 @@ body {
 .wrap {
 	display: table-cell;
   vertical-align: middle;
+	padding: 20px;
 }
 .title {
 	font-family: mPlus_thin;
@@ -79,6 +80,11 @@ body {
 	height: 360px;
 	display: block;
 	margin: 0 auto 28px;
+}
+@media (max-width: 450px) {
+	.video {
+		max-width: 100%;
+	}
 }
 .text {
 	display: inline-block;
