@@ -6,6 +6,7 @@
 ## Setup
 ### Arduino
 <img src="assets/schematic.jpg" width="250"/>  
+
 1. Write [Arduino_sensing.ino](https://github.com/r21nomi/capacitance-sensor/blob/master/Arduino_sensing/Arduino_sensing.ino) to your board
 
 ### SuperCollider
