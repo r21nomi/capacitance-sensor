@@ -3,6 +3,31 @@
 ## References
 [Illutron/AdvancedTouchSensing](https://github.com/Illutron/AdvancedTouchSensing)
 
+## Setup
+### Arduino
+<img src="assets/schematic.jpg" width="250"/>  
+1. Write [Arduino_sensing.ino](https://github.com/r21nomi/capacitance-sensor/blob/master/Arduino_sensing/Arduino_sensing.ino) to your board
+
+### SuperCollider
+1. Open [sound.scd](https://github.com/r21nomi/capacitance-sensor/blob/master/audio/sound.scd)
+2. `Language > Boot Server`
+3. Select whole program
+4. `Language > Evaluate Selection, Line or Region`
+
+### Processing
+1. Connect your PC to power source
+2. Connect Arduino
+3. Run [Visualizer.pde](https://github.com/r21nomi/capacitance-sensor/blob/master/Visualizer/Visualizer.pde)
+4. Change the number of serial port with the value on console
+5. Run again
+6. Change the values `VOL_MIN`, `VOL_MAX` and `BOUNDARY` with the values on console  
+
+※To run the program again, once you need to unplug the USB, and connect it to PC again
+```shell
+Error, disabling serialEvent() for /dev/cu.usbmodem1411
+null
+```
+
 ## License
 ```
 MIT License
