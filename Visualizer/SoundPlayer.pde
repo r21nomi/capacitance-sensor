@@ -7,10 +7,13 @@ class SoundPlayer {
   float voltageMax;
   boolean isPlayable = true;
 
-  public SoundPlayer(float v){
+  public SoundPlayer(){
     scClient = new SCClient();
-    voltageMax = v;
     isPlayable = true;
+  }
+  
+  public void setVoltage(float voltage) {
+    voltageMax = voltage;
   }
   
   public void play() {
@@ -22,11 +25,11 @@ class SoundPlayer {
   }
 
   private void playSound() {
-    if (isPlayable == false) {
+    if (!isPlayable) {
       return;
     }
     isPlayable = false;
-    scClient.play(this.voltageMax);
+    scClient.play(voltageMax);
     
     // to avoid that the sound is played continuously.
     delay(100);

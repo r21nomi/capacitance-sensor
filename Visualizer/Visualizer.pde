@@ -23,6 +23,7 @@ PGraphics mMask;
 Season mCurrentSeason;
 float mVoltageMax;  //電圧の最大値
 float mTimeMax;  //電圧が最大値だったときの時間
+SoundPlayer mSoundPlayer;
 
 ControlP5 cp5;
 Slider maskRadiusSlider;
@@ -45,6 +46,8 @@ void setup() {
   maskRadiusSlider.show();
   maskRadiusSlider.setValue(80);
   mIsConfigEnabled = true;
+  
+  mSoundPlayer = new SoundPlayer();
 }
 
 void draw() {
@@ -71,7 +74,8 @@ void draw() {
 
         // 電圧が閾値を超えたらサウンドを再生
         if (mVoltageMax > BOUNDARY) {
-          new SoundPlayer(mVoltageMax).play();
+          mSoundPlayer.setVoltage(mVoltageMax);
+          mSoundPlayer.play();
         }
       }
     }
