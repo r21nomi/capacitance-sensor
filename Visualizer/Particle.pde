@@ -1,4 +1,4 @@
-class Particle {
+class Particle implements Item {
 
     private float x;
     private float y;
@@ -19,34 +19,25 @@ class Particle {
         mDir = random(-1, 1) > 0 ? 1 : -1;
     }
 
-    public void update() {
+    @Override
+    public void update(float velocity) {
         radius = radius - 0.5;
         opacity = opacity + 5;
     }
 
-    public void draw(Season season, PGraphics pg) {
+    @Override
+    public void draw(PGraphics pg) {
         pg.noStroke();
 
-        switch (season) {
-            case SPRING:
-                pg.fill(255, 100, 210, opacity);
-                break;
-
-            case SUMMER:
-                pg.fill(255, 255, 0, opacity);
-                break;
-
-            case AUTUMN:
-                pg.fill(255, 100, 0, opacity);
-                break;
-
-            case WINTER:
-                pg.fill(col, opacity);
-                break;
+        if (mIsDebugMode) {
+            pg.fill(255, 100, 0, opacity);
+        } else {
+            pg.fill(col, opacity);
         }
         pg.ellipse(x + sin(frameCount * 0.1) * random(6, 7) * mDir, y, radius, radius);
     }
 
+    @Override
     public boolean shouldRemove() {
         return radius < 0;
     }

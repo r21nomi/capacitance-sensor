@@ -18,15 +18,17 @@ float mMaxVol = 0;
 float mMinVol = 200;
 
 DrawController mDrawController;
+ItemType mItemType;
 PGraphics mPg;
 PGraphics mMask;
-Season mCurrentSeason;
 float mVoltageMax;  //電圧の最大値
 float mTimeMax;  //電圧が最大値だったときの時間
 SoundPlayer mSoundPlayer;
 
 ControlP5 cp5;
 Slider maskRadiusSlider;
+boolean mIsDebugMode;
+boolean mAddable;
 
 void setup() {
     size(displayWidth, displayHeight);
@@ -38,7 +40,6 @@ void setup() {
     mDrawController = new DrawController();
     mPg = createGraphics(width, height);
     mMask = createGraphics(width, height);
-    mCurrentSeason = Season.SPRING;
 
     cp5 = new ControlP5(this);
     maskRadiusSlider = cp5.addSlider(MASK_RADIUS_SLIDER_NAME);
@@ -46,8 +47,11 @@ void setup() {
     maskRadiusSlider.show();
     maskRadiusSlider.setValue(80);
     mIsConfigEnabled = true;
+    mIsDebugMode = true;
+    mAddable = true;
 
     mSoundPlayer = new SoundPlayer();
+    mItemType = ItemType.PARTICLE;
 }
 
 void draw() {
@@ -81,8 +85,17 @@ void draw() {
         }
 
         // 電圧が閾値を超えたら描画リストにパーティクルを追加
-        if (mVoltageMax > BOUNDARY) {
-            mDrawController.addParticle(new Particle(mVoltageMax, mTimeMax, VOL_MIN, VOL_MAX, BOUNDARY));
+        if (mAddable && mVoltageMax > BOUNDARY) {
+            //mDrawController.addParticle(createItem());
+            mAddable = false;
+            mDrawController.addParticle(createItem());
+            
+            new Thread(new Runnable(){
+                public void run() {
+                    delay(mItemType.delay);
+                    mAddable = true;
+                }
+            }).start();
         }
 
         drawWithMask();
@@ -98,12 +111,23 @@ void draw() {
     }
 }
 
+Item createItem() {
+    switch(mItemType) {
+        case CIRCLE:
+            return new Circle(color(random(255), random(255), random(255)), getMaskedRadis());
+
+        case PARTICLE:
+        default:
+            return new Particle(mVoltageMax, mTimeMax, VOL_MIN, VOL_MAX, BOUNDARY);
+    }
+}
+
 void drawWithMask() {
     mPg.beginDraw();
     mPg.smooth();
     mPg.background(0);
 
-    mDrawController.draw(mCurrentSeason, mPg);
+    mDrawController.draw(mPg);
 
     mPg.endDraw();
 
@@ -112,20 +136,22 @@ void drawWithMask() {
     mMask.background(0);
     mMask.noStroke();
     mMask.fill(255);
-    mMask.ellipse(width / 2,
-                height / 2,
-                map(maskRadiusSlider.getValue(), 0, 100, 1, height),
-                map(maskRadiusSlider.getValue(), 0, 100, 1, height));
+    mMask.ellipse(width / 2, height / 2, getMaskedRadis(), getMaskedRadis());
     mMask.endDraw();
 
     mPg.mask(mMask);
     image(mPg, 0, 0);
 }
 
+float getMaskedRadis() {
+    return map(maskRadiusSlider.getValue(), 0, 100, 1, height);
+}
+
 void keyReleased() {
     switch (key) {
         case ' ':
             mIsConfigEnabled = !mIsConfigEnabled;
+            mIsDebugMode = !mIsDebugMode;
 
             if (mIsConfigEnabled) {
                 maskRadiusSlider.show();
@@ -135,19 +161,17 @@ void keyReleased() {
             break;
 
         case '1':
-            mCurrentSeason = Season.SPRING;
+            mItemType = ItemType.PARTICLE;
             break;
 
         case '2':
-            mCurrentSeason = Season.SUMMER;
+            mItemType = ItemType.CIRCLE;
             break;
 
         case '3':
-            mCurrentSeason = Season.AUTUMN;
             break;
 
         case '4':
-            mCurrentSeason = Season.WINTER;
             break;
     }
 }
