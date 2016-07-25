@@ -28,7 +28,7 @@ class DrawController {
                 iterator.remove();
 
             } else {
-                particle.update(5);
+                particle.update(10);
             }
         }
     }

@@ -6,7 +6,7 @@ import processing.serial.*;
  */
 int SerialPortNumber = 2;
 // If it is raspberry pi, this value might be 1.
-int PortSelected = 1;
+int PortSelected = 2;
 
 int xValue, yValue, Command;
 boolean Error = true;
